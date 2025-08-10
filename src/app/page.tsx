@@ -15,7 +15,9 @@ type ComponentKey =
   | "750k Views Card"
   | "Radar Loader"
   | "E-Card Designer"
-  | "Flip Card";
+  | "Flip Card"
+  | "Generating Loader"
+  | "Card Hover Effect";
 
 const COMPONENT_PROMPTS: Record<ComponentKey, string> = {
   "750k Views Card": `# 750k Views Component
@@ -479,6 +481,331 @@ import FlipCard from "./FlipCard";
 - 💫 3D perspective effects
 
 Perfect for payment forms, e-commerce sites, or any modern UI requiring credit card displays.`,
+
+  "Generating Loader": `# Generating Loader Component
+
+An animated text loader with colorful gradient effects and letter-by-letter animation.
+
+## Installation
+
+No additional dependencies required - uses CSS modules.
+
+## Files to create:
+
+### 1. Component file (GeneratingLoader.tsx)
+\`\`\`tsx
+import styles from "./GeneratingLoader.module.css";
+
+interface GeneratingLoaderProps {
+  text?: string;
+}
+
+export default function GeneratingLoader({ text = "Generating" }: GeneratingLoaderProps) {
+  const letters = text.split("");
+  
+  return (
+    <div className={styles.loaderWrapper}>
+      {letters.map((letter, index) => (
+        <span key={index} className={styles.loaderLetter}>
+          {letter}
+        </span>
+      ))}
+      <div className={styles.generatingLoader}></div>
+    </div>
+  );
+}
+\`\`\`
+
+### 2. CSS Module file (GeneratingLoader.module.css)
+\`\`\`css
+.loaderWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 120px;
+  width: auto;
+  margin: 2rem;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 1.6em;
+  font-weight: 600;
+  user-select: none;
+  color: #fff;
+
+  scale: 2;
+}
+
+.generatingLoader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+
+  background-color: transparent;
+  mask: repeating-linear-gradient(
+    90deg,
+    transparent 0,
+    transparent 6px,
+    black 7px,
+    black 8px
+  );
+}
+
+.generatingLoader::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  background-image: radial-gradient(circle at 50% 50%, #ff0 0%, transparent 50%),
+    radial-gradient(circle at 45% 45%, #f00 0%, transparent 45%),
+    radial-gradient(circle at 55% 55%, #0ff 0%, transparent 45%),
+    radial-gradient(circle at 45% 55%, #0f0 0%, transparent 45%),
+    radial-gradient(circle at 55% 45%, #00f 0%, transparent 45%);
+  mask: radial-gradient(
+    circle at 50% 50%,
+    transparent 0%,
+    transparent 10%,
+    black 25%
+  );
+  animation:
+    transform-animation 2s infinite alternate,
+    opacity-animation 4s infinite;
+  animation-timing-function: cubic-bezier(0.6, 0.8, 0.5, 1);
+}
+
+@keyframes transform-animation {
+  0% {
+    transform: translate(-55%);
+  }
+  100% {
+    transform: translate(55%);
+  }
+}
+
+@keyframes opacity-animation {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  65% {
+    opacity: 0;
+  }
+}
+
+.loaderLetter {
+  display: inline-block;
+  opacity: 0;
+  animation: loader-letter-anim 4s infinite linear;
+  z-index: 2;
+}
+
+.loaderLetter:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.loaderLetter:nth-child(2) {
+  animation-delay: 0.205s;
+}
+.loaderLetter:nth-child(3) {
+  animation-delay: 0.31s;
+}
+.loaderLetter:nth-child(4) {
+  animation-delay: 0.415s;
+}
+.loaderLetter:nth-child(5) {
+  animation-delay: 0.521s;
+}
+.loaderLetter:nth-child(6) {
+  animation-delay: 0.626s;
+}
+.loaderLetter:nth-child(7) {
+  animation-delay: 0.731s;
+}
+.loaderLetter:nth-child(8) {
+  animation-delay: 0.837s;
+}
+.loaderLetter:nth-child(9) {
+  animation-delay: 0.942s;
+}
+.loaderLetter:nth-child(10) {
+  animation-delay: 1.047s;
+}
+
+@keyframes loader-letter-anim {
+  0% {
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+    text-shadow: 0 0 4px #fff;
+    transform: scale(1.1) translateY(-2px);
+  }
+  20% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+\`\`\`
+
+## Usage
+
+\`\`\`tsx
+import GeneratingLoader from "./GeneratingLoader";
+
+// Default usage
+<GeneratingLoader />
+
+// Custom text
+<GeneratingLoader text="Loading" />
+\`\`\`
+
+## Features
+
+- ✨ Animated letter-by-letter text reveal
+- 🌈 Colorful gradient background effects
+- 🎨 Customizable text content
+- 📱 Responsive design
+- 🚀 No external dependencies
+- 💫 Smooth animations with cubic-bezier timing
+
+Perfect for loading states, AI generation indicators, or any modern UI requiring dynamic text animations.`,
+
+  "Card Hover Effect": `# Card Hover Effect Component
+
+A sleek card component with smooth hover animations and glowing border effects.
+
+## Installation
+
+No additional dependencies required - uses CSS modules.
+
+## Files to create:
+
+### 1. Component file (CardHoverEffect.tsx)
+\`\`\`tsx
+import styles from "./CardHoverEffect.module.css";
+
+interface CardHoverEffectProps {
+  heading?: string;
+  description?: string;
+  buttonText?: string;
+}
+
+export default function CardHoverEffect({ 
+  heading = "Card Hover Effect",
+  description = "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi laboriosam at voluptas minus culpa deserunt delectus sapiente inventore pariatur",
+  buttonText = "Read more"
+}: CardHoverEffectProps) {
+  return (
+    <div className={styles.hoverCard}>
+      <div className={styles.hoverCardContent}>
+        <p className={styles.hoverCardHeading}>{heading}</p>
+        <p className={styles.hoverCardPara}>{description}</p>
+        <button className={styles.hoverCardBtn}>{buttonText}</button>
+      </div>
+    </div>
+  );
+}
+\`\`\`
+
+### 2. CSS Module file (CardHoverEffect.module.css)
+\`\`\`css
+.hoverCard {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 320px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  padding: 32px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #212121;
+  border: 2px solid #313131;
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.hoverCardContent {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  color: #e8e8e8;
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.hoverCardContent .hoverCardHeading {
+  font-weight: 700;
+  font-size: 32px;
+}
+
+.hoverCardContent .hoverCardPara {
+  line-height: 1.5;
+}
+
+.hoverCardContent .hoverCardBtn {
+  color: #e8e8e8;
+  text-decoration: none;
+  padding: 10px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  background: #0974f1;
+  border-radius: 5px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.hoverCard:hover {
+  box-shadow: 0 0 20px rgba(9, 117, 241, 0.8);
+  border-color: #0974f1;
+}
+
+.hoverCardContent .hoverCardBtn:hover {
+  outline: 2px solid #e8e8e8;
+  background: transparent;
+  color: #e8e8e8;
+}
+
+.hoverCardContent .hoverCardBtn:active {
+  box-shadow: none;
+}
+\`\`\`
+
+## Usage
+
+\`\`\`tsx
+import CardHoverEffect from "./CardHoverEffect";
+
+// Default usage
+<CardHoverEffect />
+
+// Custom values
+<CardHoverEffect 
+  heading="Custom Title" 
+  description="Your custom description here" 
+  buttonText="Learn More" 
+/>
+\`\`\`
+
+## Features
+
+- ✨ Smooth hover animations with cubic-bezier timing
+- 💙 Blue glowing border effect on hover
+- 🎨 Dark theme with elegant styling
+- 📱 Responsive design
+- 🚀 No external dependencies
+- 💫 Interactive button with outline effect
+
+Perfect for feature cards, product showcases, or any modern UI requiring elegant hover interactions.`,
 };
 
 export default function ComponentLibrary() {
@@ -625,6 +952,36 @@ export default function ComponentLibrary() {
             </div>
           </div>
         );
+      case "Generating Loader":
+        return (
+          <div className={styles.loaderWrapper}>
+            <span className={styles.loaderLetter}>G</span>
+            <span className={styles.loaderLetter}>e</span>
+            <span className={styles.loaderLetter}>n</span>
+            <span className={styles.loaderLetter}>e</span>
+            <span className={styles.loaderLetter}>r</span>
+            <span className={styles.loaderLetter}>a</span>
+            <span className={styles.loaderLetter}>t</span>
+            <span className={styles.loaderLetter}>i</span>
+            <span className={styles.loaderLetter}>n</span>
+            <span className={styles.loaderLetter}>g</span>
+            <div className={styles.generatingLoader}></div>
+          </div>
+        );
+      case "Card Hover Effect":
+        return (
+          <div className={styles.hoverCard}>
+            <div className={styles.hoverCardContent}>
+              <p className={styles.hoverCardHeading}>Card Hover Effect</p>
+              <p className={styles.hoverCardPara}>
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi
+                laboriosam at voluptas minus culpa deserunt delectus sapiente
+                inventore pariatur
+              </p>
+              <button className={styles.hoverCardBtn}>Read more</button>
+            </div>
+          </div>
+        );
       default:
         return null;
     }
@@ -682,6 +1039,20 @@ export default function ComponentLibrary() {
                   }
                 >
                   Flip Card
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
+                    setSelectedComponent("Generating Loader" as ComponentKey)
+                  }
+                >
+                  Generating Loader
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
+                    setSelectedComponent("Card Hover Effect" as ComponentKey)
+                  }
+                >
+                  Card Hover Effect
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

@@ -1,5 +1,5 @@
 "use client";
-import { DotsGridBackground } from "@/reactbits";
+import { DotsGridBackground } from "../../../reactbits";
 
 export default function Page() {
   return (

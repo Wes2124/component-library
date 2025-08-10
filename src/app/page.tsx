@@ -11,7 +11,9 @@ import {
 import { Copy, Check, ChevronDown, Sun, Moon } from "lucide-react";
 import styles from "./views.module.css";
 
-const COMPONENT_PROMPTS = {
+type ComponentKey = "750k Views Card" | "Radar Loader" | "E-Card Designer";
+
+const COMPONENT_PROMPTS: Record<ComponentKey, string> = {
   "750k Views Card": `# 750k Views Component
 
 A sleek animated card component displaying view counts with a modern gradient design.
@@ -337,7 +339,8 @@ Perfect for team pages, portfolio displays, or any modern UI requiring elegant p
 
 export default function ComponentLibrary() {
   const [copied, setCopied] = useState(false);
-  const [selectedComponent, setSelectedComponent] = useState("750k Views Card");
+  const [selectedComponent, setSelectedComponent] =
+    useState<ComponentKey>("750k Views Card");
   const [previewTheme, setPreviewTheme] = useState("dark");
 
   const copyToClipboard = async () => {
@@ -430,17 +433,23 @@ export default function ComponentLibrary() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="min-w-[200px]">
                 <DropdownMenuItem
-                  onClick={() => setSelectedComponent("750k Views Card")}
+                  onClick={() =>
+                    setSelectedComponent("750k Views Card" as ComponentKey)
+                  }
                 >
                   750k Views Card
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onClick={() => setSelectedComponent("Radar Loader")}
+                  onClick={() =>
+                    setSelectedComponent("Radar Loader" as ComponentKey)
+                  }
                 >
                   Radar Loader
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onClick={() => setSelectedComponent("E-Card Designer")}
+                  onClick={() =>
+                    setSelectedComponent("E-Card Designer" as ComponentKey)
+                  }
                 >
                   E-Card Designer
                 </DropdownMenuItem>

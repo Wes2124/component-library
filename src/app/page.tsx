@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Copy, Check, ChevronDown, Sun, Moon } from "lucide-react";
 import styles from "./views.module.css";
+import { DotsGridBackground, TextType } from "@/reactbits";
 
 type ComponentKey =
   | "750k Views Card"
@@ -17,7 +18,9 @@ type ComponentKey =
   | "E-Card Designer"
   | "Flip Card"
   | "Generating Loader"
-  | "Card Hover Effect";
+  | "Card Hover Effect"
+  | "Dots Grid Background"
+  | "Text Type";
 
 const COMPONENT_PROMPTS: Record<ComponentKey, string> = {
   "750k Views Card": `# 750k Views Component
@@ -806,6 +809,191 @@ import CardHoverEffect from "./CardHoverEffect";
 - 💫 Interactive button with outline effect
 
 Perfect for feature cards, product showcases, or any modern UI requiring elegant hover interactions.`,
+
+  "Dots Grid Background": `# Dots Grid Background Component
+
+A customizable dotted grid background component perfect for modern UI designs.
+
+## Installation
+
+No additional dependencies required - uses SVG patterns.
+
+## Files to create:
+
+### 1. Component file (DotsGridBackground.tsx)
+\`\`\`tsx
+import React from "react";
+
+interface DotsGridBackgroundProps {
+  className?: string;
+  dotSize?: number;
+  dotColor?: string;
+  spacing?: number;
+}
+
+export const DotsGridBackground: React.FC<DotsGridBackgroundProps> = ({
+  className = "",
+  dotSize = 0.5,
+  dotColor = "#e5e7eb",
+  spacing = 16,
+}) => {
+  const patternId = \`dots-pattern-\${Math.random().toString(36).substr(2, 9)}\`;
+
+  return (
+    <div className={\`absolute inset-0 overflow-hidden \${className}\`}>
+      <svg
+        className="w-full h-full"
+        xmlns="http://www.w3.org/2000/svg"
+        style={{ opacity: 0.4 }}
+      >
+        <defs>
+          <pattern
+            id={patternId}
+            x="0"
+            y="0"
+            width={spacing}
+            height={spacing}
+            patternUnits="userSpaceOnUse"
+          >
+            <circle
+              cx={spacing / 2}
+              cy={spacing / 2}
+              r={dotSize}
+              fill={dotColor}
+              fillOpacity="0.8"
+            />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill={\`url(#\${patternId})\`} />
+      </svg>
+    </div>
+  );
+};
+\`\`\`
+
+## Usage
+
+\`\`\`tsx
+import { DotsGridBackground } from "./DotsGridBackground";
+
+// Default usage
+<div className="relative h-64">
+  <DotsGridBackground />
+  <div className="relative z-10 p-8">
+    <h1>Your content here</h1>
+  </div>
+</div>
+
+// Custom styling
+<div className="relative h-64">
+  <DotsGridBackground 
+    dotSize={1} 
+    dotColor="#3b82f6" 
+    spacing={20} 
+  />
+  <div className="relative z-10 p-8">
+    <h1>Your content here</h1>
+  </div>
+</div>
+\`\`\`
+
+## Features
+
+- 🎨 Fully customizable dot size, color, and spacing
+- 📱 Responsive SVG-based implementation
+- 🚀 No external dependencies
+- 💫 Subtle opacity for background use
+- ⚡ Lightweight and performant
+- 🎯 Perfect for hero sections and backgrounds
+
+Perfect for landing pages, hero sections, or any modern UI requiring subtle background patterns.`,
+
+  "Text Type": `# Text Type Component
+
+A typewriter-style text animation component that types out text character by character.
+
+## Installation
+
+No additional dependencies required - uses React hooks and Tailwind CSS.
+
+## Files to create:
+
+### 1. Component file (TextType.tsx)
+\`\`\`tsx
+import React, { useState, useEffect } from "react";
+
+interface TextTypeProps {
+  text?: string;
+  speed?: number;
+  className?: string;
+}
+
+export const TextType: React.FC<TextTypeProps> = ({
+  text = "Hello, World!",
+  speed = 100,
+  className = "",
+}) => {
+  const [displayedText, setDisplayedText] = useState("");
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    if (currentIndex < text.length) {
+      const timeout = setTimeout(() => {
+        setDisplayedText((prev) => prev + text[currentIndex]);
+        setCurrentIndex((prev) => prev + 1);
+      }, speed);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [currentIndex, text, speed]);
+
+  useEffect(() => {
+    setDisplayedText("");
+    setCurrentIndex(0);
+  }, [text]);
+
+  return (
+    <div className={\`font-mono text-2xl \${className}\`}>
+      {displayedText}
+      <span className="animate-pulse">|</span>
+    </div>
+  );
+};
+\`\`\`
+
+## Usage
+
+\`\`\`tsx
+import { TextType } from "./TextType";
+
+// Default usage
+<TextType />
+
+// Custom text and speed
+<TextType 
+  text="Welcome to our website!" 
+  speed={150} 
+  className="text-blue-600 text-4xl" 
+/>
+
+// Slow typing effect
+<TextType 
+  text="This types slowly..." 
+  speed={200} 
+/>
+\`\`\`
+
+## Features
+
+- ⌨️ Realistic typewriter animation
+- 🎨 Customizable text content
+- ⚡ Adjustable typing speed
+- 💫 Animated cursor with pulse effect
+- 🚀 No external dependencies
+- 📱 Responsive design with Tailwind CSS
+- 🔄 Auto-resets when text changes
+
+Perfect for hero sections, loading states, or any modern UI requiring engaging text animations.`,
 };
 
 export default function ComponentLibrary() {
@@ -982,6 +1170,39 @@ export default function ComponentLibrary() {
             </div>
           </div>
         );
+      case "Dots Grid Background":
+        return (
+          <div className="relative w-full h-64 bg-white border rounded-lg overflow-hidden">
+            <DotsGridBackground />
+            <div className="relative z-10 flex items-center justify-center h-full">
+              <div className="text-center p-8">
+                <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                  Dots Grid Background
+                </h2>
+                <p className="text-gray-600">
+                  A subtle dotted pattern perfect for backgrounds
+                </p>
+              </div>
+            </div>
+          </div>
+        );
+      case "Text Type":
+        return (
+          <div className="flex items-center justify-center p-8">
+            <TextType
+              text={[
+                "Text typing effect",
+                "for your websites",
+                "Happy coding!",
+              ]}
+              typingSpeed={75}
+              pauseDuration={1500}
+              showCursor={true}
+              cursorCharacter="|"
+              className="text-foreground font-mono text-2xl"
+            />
+          </div>
+        );
       default:
         return null;
     }
@@ -1053,6 +1274,20 @@ export default function ComponentLibrary() {
                   }
                 >
                   Card Hover Effect
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
+                    setSelectedComponent("Dots Grid Background" as ComponentKey)
+                  }
+                >
+                  Dots Grid Background
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
+                    setSelectedComponent("Text Type" as ComponentKey)
+                  }
+                >
+                  Text Type
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

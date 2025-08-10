@@ -11,7 +11,9 @@ import {
 import { Copy, Check, ChevronDown, Sun, Moon } from "lucide-react";
 import styles from "./views.module.css";
 
-const COMPONENT_PROMPTS = {
+type ComponentKey = "750k Views Card" | "Radar Loader";
+
+const COMPONENT_PROMPTS: Record<ComponentKey, string> = {
   "750k Views Card": `# 750k Views Component
 
 A sleek animated card component displaying view counts with a modern gradient design.
@@ -269,7 +271,8 @@ Perfect for loading states, data processing indicators, or any modern UI requiri
 
 export default function ViewsPage() {
   const [copied, setCopied] = useState(false);
-  const [selectedComponent, setSelectedComponent] = useState("750k Views Card");
+  const [selectedComponent, setSelectedComponent] =
+    useState<ComponentKey>("750k Views Card");
   const [previewTheme, setPreviewTheme] = useState("dark");
 
   const copyToClipboard = async () => {
@@ -336,12 +339,16 @@ export default function ViewsPage() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="min-w-[200px]">
                 <DropdownMenuItem
-                  onClick={() => setSelectedComponent("750k Views Card")}
+                  onClick={() =>
+                    setSelectedComponent("750k Views Card" as ComponentKey)
+                  }
                 >
                   750k Views Card
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onClick={() => setSelectedComponent("Radar Loader")}
+                  onClick={() =>
+                    setSelectedComponent("Radar Loader" as ComponentKey)
+                  }
                 >
                   Radar Loader
                 </DropdownMenuItem>

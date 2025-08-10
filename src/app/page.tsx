@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "../components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../components/ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 import { Copy, Check, ChevronDown, Sun, Moon } from "lucide-react";
 import styles from "./views.module.css";
 

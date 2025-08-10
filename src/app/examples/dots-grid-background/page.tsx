@@ -1,9 +1,9 @@
 "use client";
-import { DotsGridBackground } from "../../../reactbits";
+import { DotsGridBackground } from "@/reactbits";
 
 export default function Page() {
   return (
-    <div className="h-[60vh]">
+    <div className="h-[60vh] bg-white">
       <DotsGridBackground />
     </div>
   );

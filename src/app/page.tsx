@@ -1357,7 +1357,7 @@ export default function Home() {
           <div className="p-8">
             <TextType
               text="Hello, World! This is a typewriter effect."
-              speed={100}
+              typingSpeed={100}
             />
           </div>
         );

@@ -76,6 +76,10 @@ interface TextTypeProps {
   reverseMode?: boolean;
 }
 
+// Export Marquee component
+export { Marquee } from "./components/Marquee";
+export { MarqueeDemo } from "./components/MarqueeDemo";
+
 export const TextType = ({
   text = ["Hello, World!"],
   as: Component = "div",

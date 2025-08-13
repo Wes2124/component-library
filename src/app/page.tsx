@@ -10,7 +10,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Copy, Check, ChevronDown, Sun, Moon } from "lucide-react";
 import styles from "./views.module.css";
-import { DotsGridBackground, TextType } from "@/reactbits";
+import {
+  DotsGridBackground,
+  TextType,
+  Marquee,
+  MarqueeDemo,
+} from "@/reactbits";
 
 type ComponentKey =
   | "750k Views Card"
@@ -20,7 +25,8 @@ type ComponentKey =
   | "Generating Loader"
   | "Card Hover Effect"
   | "Dots Grid Background"
-  | "Text Type";
+  | "Text Type"
+  | "Marquee";
 
 const COMPONENT_PROMPTS: Record<ComponentKey, string> = {
   "750k Views Card": `# 750k Views Component
@@ -994,13 +1000,180 @@ import { TextType } from "./TextType";
 - 🔄 Auto-resets when text changes
 
 Perfect for hero sections, loading states, or any modern UI requiring engaging text animations.`,
+
+  Marquee: `# Marquee Component
+
+A smooth scrolling marquee component with customizable direction, speed, and hover effects.
+
+## Installation
+
+Requires Framer Motion for animations.
+
+\`\`\`bash
+npm install framer-motion
+\`\`\`
+
+## Files to create:
+
+### 1. Component file (Marquee.tsx)
+\`\`\`tsx
+"use client";
+
+import React, { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
+
+interface MarqueeProps {
+  children: React.ReactNode;
+  direction?: "left" | "right";
+  speed?: number;
+  pauseOnHover?: boolean;
+  className?: string;
+}
+
+export function Marquee({
+  children,
+  direction = "left",
+  speed = 50,
+  pauseOnHover = false,
+  className = "",
+}: MarqueeProps) {
+  const [containerWidth, setContainerWidth] = useState(0);
+  const [contentWidth, setContentWidth] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const updateWidths = () => {
+      if (containerRef.current && contentRef.current) {
+        setContainerWidth(containerRef.current.offsetWidth);
+        setContentWidth(contentRef.current.offsetWidth);
+      }
+    };
+
+    updateWidths();
+    window.addEventListener("resize", updateWidths);
+    return () => window.removeEventListener("resize", updateWidths);
+  }, [children]);
+
+  const duration = contentWidth > 0 ? contentWidth / speed : 20;
+
+  return (
+    <div
+      ref={containerRef}
+      className={\`relative overflow-hidden \${className}\`}
+      style={{
+        maskImage:
+          "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
+        WebkitMaskImage:
+          "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
+      }}
+    >
+      <motion.div
+        className="flex gap-4"
+        animate={{
+          x: direction === "left" ? [-contentWidth, 0] : [0, -contentWidth],
+        }}
+        transition={{
+          duration,
+          ease: "linear",
+          repeat: Infinity,
+          repeatType: "loop",
+        }}
+        whileHover={pauseOnHover ? { animationPlayState: "paused" } : {}}
+      >
+        <div ref={contentRef} className="flex gap-4 shrink-0">
+          {children}
+        </div>
+        <div className="flex gap-4 shrink-0">{children}</div>
+      </motion.div>
+    </div>
+  );
+}
+\`\`\`
+
+### 2. Demo component (MarqueeDemo.tsx)
+\`\`\`tsx
+import React from "react";
+import { Marquee } from "./Marquee";
+
+export function MarqueeDemo() {
+  const items = [
+    { id: 1, text: "Item 1", color: "bg-red-500" },
+    { id: 2, text: "Item 2", color: "bg-blue-500" },
+    { id: 3, text: "Item 3", color: "bg-green-500" },
+    { id: 4, text: "Item 4", color: "bg-yellow-500" },
+    { id: 5, text: "Item 5", color: "bg-purple-500" },
+  ];
+
+  return (
+    <div className="w-full py-8 bg-white">
+      <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">
+        Marquee Demo
+      </h2>
+
+      {/* Basic Marquee */}
+      <Marquee speed={50} className="mb-8">
+        {items.map((item) => (
+          <div
+            key={item.id}
+            className={\`\${item.color} text-white px-6 py-3 rounded-lg min-w-[200px] text-center\`}
+          >
+            {item.text}
+          </div>
+        ))}
+      </Marquee>
+
+      {/* Reverse Direction with Hover Pause */}
+      <Marquee direction="right" speed={30} pauseOnHover className="mb-8">
+        {items.map((item) => (
+          <div
+            key={item.id}
+            className="bg-gray-800 text-white px-6 py-3 rounded-lg min-w-[200px] text-center border border-gray-600"
+          >
+            Hover to pause - {item.text}
+          </div>
+        ))}
+      </Marquee>
+    </div>
+  );
+}
+\`\`\`
+
+## Usage
+
+\`\`\`tsx
+import { Marquee } from "./Marquee";
+
+// Basic usage
+<Marquee>
+  <div>Item 1</div>
+  <div>Item 2</div>
+  <div>Item 3</div>
+</Marquee>
+
+// Custom direction and speed
+<Marquee direction="right" speed={30} pauseOnHover>
+  <div>Scrolling right with hover pause</div>
+</Marquee>
+\`\`\`
+
+## Features
+
+- 🎯 Smooth scrolling animation with Framer Motion
+- ↔️ Customizable scroll direction (left/right)
+- ⚡ Adjustable scroll speed
+- ⏸️ Optional pause on hover
+- 🎨 Gradient fade edges for smooth appearance
+- 📱 Responsive and accessible
+- 🔄 Infinite loop scrolling
+
+Perfect for showcasing logos, testimonials, or any content that needs continuous scrolling display.`,
 };
 
-export default function ComponentLibrary() {
-  const [copied, setCopied] = useState(false);
+export default function Home() {
   const [selectedComponent, setSelectedComponent] =
     useState<ComponentKey>("750k Views Card");
-  const [previewTheme, setPreviewTheme] = useState("dark");
+  const [copied, setCopied] = useState(false);
 
   const copyToClipboard = async () => {
     try {
@@ -1037,17 +1210,17 @@ export default function ComponentLibrary() {
         );
       case "E-Card Designer":
         return (
-          <div className="e-card playing">
-            <div className="image"></div>
-            <div className="wave"></div>
-            <div className="wave"></div>
-            <div className="wave"></div>
-            <div className="infotop">
+          <div className={`${styles.eCard} ${styles.playing}`}>
+            <div className={styles.image}></div>
+            <div className={styles.wave}></div>
+            <div className={styles.wave}></div>
+            <div className={styles.wave}></div>
+            <div className={styles.infotop}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                className="icon"
+                className={styles.icon}
               >
                 <path
                   fill="currentColor"
@@ -1057,7 +1230,7 @@ export default function ComponentLibrary() {
               <br />
               UI / EX Designer
               <br />
-              <div className="name">MikeAndrewDesigner</div>
+              <div className={styles.name}>MikeAndrewDesigner</div>
             </div>
           </div>
         );
@@ -1143,16 +1316,11 @@ export default function ComponentLibrary() {
       case "Generating Loader":
         return (
           <div className={styles.loaderWrapper}>
-            <span className={styles.loaderLetter}>G</span>
-            <span className={styles.loaderLetter}>e</span>
-            <span className={styles.loaderLetter}>n</span>
-            <span className={styles.loaderLetter}>e</span>
-            <span className={styles.loaderLetter}>r</span>
-            <span className={styles.loaderLetter}>a</span>
-            <span className={styles.loaderLetter}>t</span>
-            <span className={styles.loaderLetter}>i</span>
-            <span className={styles.loaderLetter}>n</span>
-            <span className={styles.loaderLetter}>g</span>
+            {"Generating".split("").map((letter, index) => (
+              <span key={index} className={styles.loaderLetter}>
+                {letter}
+              </span>
+            ))}
             <div className={styles.generatingLoader}></div>
           </div>
         );
@@ -1172,56 +1340,48 @@ export default function ComponentLibrary() {
         );
       case "Dots Grid Background":
         return (
-          <div className="relative w-full h-64 bg-white border rounded-lg overflow-hidden">
+          <div className="relative h-64 w-full">
             <DotsGridBackground />
-            <div className="relative z-10 flex items-center justify-center h-full">
-              <div className="text-center p-8">
-                <h2 className="text-2xl font-bold text-gray-800 mb-2">
-                  Dots Grid Background
-                </h2>
-                <p className="text-gray-600">
-                  A subtle dotted pattern perfect for backgrounds
-                </p>
-              </div>
+            <div className="relative z-10 p-8 text-center">
+              <h1 className="text-2xl font-bold text-gray-800">
+                Dots Grid Background
+              </h1>
+              <p className="text-gray-600 mt-2">
+                A customizable dotted grid background
+              </p>
             </div>
           </div>
         );
       case "Text Type":
         return (
-          <div className="flex items-center justify-center p-8">
+          <div className="p-8">
             <TextType
-              text={[
-                "Text typing effect",
-                "for your websites",
-                "Happy coding!",
-              ]}
-              typingSpeed={75}
-              pauseDuration={1500}
-              showCursor={true}
-              cursorCharacter="|"
-              className="text-foreground font-mono text-2xl"
+              text="Hello, World! This is a typewriter effect."
+              speed={100}
             />
           </div>
         );
+      case "Marquee":
+        return (
+          <div className="w-full">
+            <MarqueeDemo />
+          </div>
+        );
       default:
-        return null;
+        return <div>Select a component to preview</div>;
     }
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="border-b bg-card">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">
-                Component Library
-              </h1>
-              <p className="text-muted-foreground">
-                Copy-paste ready components for your projects
-              </p>
-            </div>
+    <div className="min-h-screen bg-white">
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">ReactBits</h1>
+          <p className="text-lg text-gray-600 mb-6">
+            A collection of beautiful, reusable React components
+          </p>
+
+          <div className="flex items-center justify-center gap-4 mb-8">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -1232,138 +1392,48 @@ export default function ComponentLibrary() {
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="min-w-[200px]">
-                <DropdownMenuItem
-                  onClick={() =>
-                    setSelectedComponent("750k Views Card" as ComponentKey)
-                  }
-                >
-                  750k Views Card
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() =>
-                    setSelectedComponent("Radar Loader" as ComponentKey)
-                  }
-                >
-                  Radar Loader
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() =>
-                    setSelectedComponent("E-Card Designer" as ComponentKey)
-                  }
-                >
-                  E-Card Designer
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() =>
-                    setSelectedComponent("Flip Card" as ComponentKey)
-                  }
-                >
-                  Flip Card
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() =>
-                    setSelectedComponent("Generating Loader" as ComponentKey)
-                  }
-                >
-                  Generating Loader
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() =>
-                    setSelectedComponent("Card Hover Effect" as ComponentKey)
-                  }
-                >
-                  Card Hover Effect
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() =>
-                    setSelectedComponent("Dots Grid Background" as ComponentKey)
-                  }
-                >
-                  Dots Grid Background
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() =>
-                    setSelectedComponent("Text Type" as ComponentKey)
-                  }
-                >
-                  Text Type
-                </DropdownMenuItem>
+              <DropdownMenuContent className="w-[200px]">
+                {Object.keys(COMPONENT_PROMPTS).map((component) => (
+                  <DropdownMenuItem
+                    key={component}
+                    onClick={() =>
+                      setSelectedComponent(component as ComponentKey)
+                    }
+                  >
+                    {component}
+                  </DropdownMenuItem>
+                ))}
               </DropdownMenuContent>
             </DropdownMenu>
+
+            <Button
+              onClick={copyToClipboard}
+              className="flex items-center gap-2"
+            >
+              {copied ? (
+                <Check className="h-4 w-4" />
+              ) : (
+                <Copy className="h-4 w-4" />
+              )}
+              {copied ? "Copied!" : "Copy Code"}
+            </Button>
           </div>
         </div>
-      </div>
-      {/* Main Content */}
-      <div className="container mx-auto px-6 py-8">
-        <div className="grid lg:grid-cols-2 gap-8 h-[calc(100vh-200px)]">
-          {/* Left Panel - Code */}
-          <div className="flex flex-col">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-foreground">
-                Component Code
-              </h2>
-              <Button
-                onClick={copyToClipboard}
-                variant="outline"
-                size="sm"
-                className="flex items-center gap-2"
-              >
-                {copied ? (
-                  <>
-                    <Check className="h-4 w-4" />
-                    Copied!
-                  </>
-                ) : (
-                  <>
-                    <Copy className="h-4 w-4" />
-                    Copy Code
-                  </>
-                )}
-              </Button>
-            </div>
-            <div className="flex-1 bg-card border rounded-lg overflow-hidden">
-              <pre className="h-full overflow-auto p-4 text-sm text-foreground font-mono leading-relaxed">
-                <code>{COMPONENT_PROMPTS[selectedComponent]}</code>
-              </pre>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="bg-gray-50 rounded-lg p-6">
+            <h2 className="text-xl font-semibold mb-4">Preview</h2>
+            <div className="flex items-center justify-center bg-white rounded border h-[400px]">
+              {renderPreview()}
             </div>
           </div>
 
-          {/* Right Panel - Preview */}
-          <div className="flex flex-col">
-            <div className="mb-4 flex items-center justify-between">
-              <div>
-                <h2 className="text-lg font-semibold text-foreground">
-                  Live Preview
-                </h2>
-              </div>
-              <div className="flex items-center gap-2">
-                <Button
-                  variant={previewTheme === "light" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setPreviewTheme("light")}
-                  className="flex items-center gap-2"
-                >
-                  <Sun className="h-4 w-4" />
-                  Light
-                </Button>
-                <Button
-                  variant={previewTheme === "dark" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setPreviewTheme("dark")}
-                  className="flex items-center gap-2"
-                >
-                  <Moon className="h-4 w-4" />
-                  Dark
-                </Button>
-              </div>
-            </div>
-            <div
-              className={`border rounded-lg flex items-center justify-center p-8 min-h-[300px] ${
-                previewTheme === "light" ? "bg-white" : "bg-gray-900"
-              }`}
-            >
-              {renderPreview()}
+          <div className="bg-gray-50 rounded-lg p-6">
+            <h2 className="text-xl font-semibold mb-4">Installation Guide</h2>
+            <div className="bg-white rounded border p-4 max-h-[400px] overflow-y-auto">
+              <pre className="text-sm text-gray-800 whitespace-pre-wrap">
+                {COMPONENT_PROMPTS[selectedComponent]}
+              </pre>
             </div>
           </div>
         </div>

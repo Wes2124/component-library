@@ -9,6 +9,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Copy, Check, ChevronDown, Sun, Moon } from "lucide-react";
+import { ThemeSwitcher } from "@/components/theme-switcher";
+import { useTheme } from "next-themes";
 import styles from "./views.module.css";
 import {
   DotsGridBackground,
@@ -1281,6 +1283,7 @@ export default function Home() {
   const [selectedComponent, setSelectedComponent] =
     useState<ComponentKey>("750k Views Card");
   const [copied, setCopied] = useState(false);
+  const { theme } = useTheme();
 
   const copyToClipboard = async () => {
     try {
@@ -1576,10 +1579,9 @@ export default function Home() {
     <div className="min-h-screen bg-white">
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">ReactBits</h1>
-          <p className="text-lg text-gray-600 mb-6">
-            A collection of beautiful, reusable React components
-          </p>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            Components for vibe coding platforms
+          </h1>
 
           <div className="flex items-center justify-center gap-4 mb-8">
             <DropdownMenu>
@@ -1621,16 +1623,29 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="bg-gray-50 rounded-lg p-6">
-            <h2 className="text-xl font-semibold mb-4">Preview</h2>
-            <div className="flex items-center justify-center bg-white rounded border h-[400px]">
+          <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                Preview
+              </h2>
+              <ThemeSwitcher />
+            </div>
+            <div
+              className={`flex items-center justify-center rounded border h-[400px] ${
+                theme === "dark"
+                  ? "bg-gray-900 border-gray-700"
+                  : "bg-white border-gray-200"
+              }`}
+            >
               {renderPreview()}
             </div>
           </div>
 
           <div className="bg-gray-50 rounded-lg p-6">
-            <h2 className="text-xl font-semibold mb-4">Installation Guide</h2>
-            <div className="bg-white rounded border p-4 max-h-[400px] overflow-y-auto">
+            <h2 className="text-xl font-semibold mb-4 text-gray-900">
+              Installation Guide
+            </h2>
+            <div className="bg-white rounded border border-gray-200 p-4 max-h-[400px] overflow-y-auto">
               <pre className="text-sm text-gray-800 whitespace-pre-wrap">
                 {COMPONENT_PROMPTS[selectedComponent]}
               </pre>

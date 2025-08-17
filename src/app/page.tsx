@@ -31,7 +31,10 @@ import {
   MorphingDialogDescription,
   MorphingDialogContainer,
 } from "@/components/core/morphing-dialog";
+import { TextShimmer } from "@/components/core/text-shimmer";
 import { PlusIcon } from "lucide-react";
+import MultipleSelector, { Option } from "@/components/ui/multiple-selector";
+import { TextLoop } from "@/components/core/text-loop";
 
 type ComponentKey =
   | "750k Views Card"
@@ -44,7 +47,10 @@ type ComponentKey =
   | "Text Type"
   | "Marquee"
   | "Text Effect Per Char"
-  | "Morphing Dialog";
+  | "Morphing Dialog"
+  | "Text Shimmer"
+  | "Multiple Selector"
+  | "Text Loop";
 
 const COMPONENT_PROMPTS: Record<ComponentKey, string> = {
   "750k Views Card": `# 750k Views Component
@@ -1293,6 +1299,337 @@ import { Marquee } from "./Marquee";
 
 Perfect for showcasing logos, testimonials, or any content that needs continuous scrolling display.`,
 
+  "Multiple Selector": `# Multiple Selector Component
+
+A powerful multi-select component with search, filtering, and customization options.
+
+## Installation
+
+Requires command and badge components from shadcn/ui.
+
+\`\`\`bash
+npx shadcn@latest add command badge
+\`\`\`
+
+## Usage
+
+\`\`\`tsx
+import MultipleSelector, { Option } from "@/components/ui/multiple-selector";
+
+const OPTIONS: Option[] = [
+  { label: "nextjs", value: "nextjs" },
+  { label: "React", value: "react" },
+  { label: "Remix", value: "remix" },
+  { label: "Vite", value: "vite" },
+  { label: "Nuxt", value: "nuxt" },
+  { label: "Vue", value: "vue" },
+  { label: "Svelte", value: "svelte" },
+  { label: "Angular", value: "angular" },
+  { label: "Ember", value: "ember", disable: true },
+  { label: "Gatsby", value: "gatsby", disable: true },
+  { label: "Astro", value: "astro" },
+];
+
+function Demo() {
+  return (
+    <MultipleSelector
+      defaultOptions={OPTIONS}
+      placeholder="Select frameworks you like..."
+      emptyIndicator={
+        <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
+          no results found.
+        </p>
+      }
+    />
+  );
+}
+\`\`\`
+
+## Features
+
+- 🔍 Search and filter options
+- 🏷️ Badge-based selection display
+- ⌨️ Keyboard navigation support
+- 🎨 Fully customizable styling
+- 📱 Responsive design
+- 🚀 Async search support
+- ✨ Create new options on the fly
+- 🔒 Fixed options that can't be removed
+- 📊 Group options by categories
+
+Perfect for forms, filters, or any interface requiring multi-selection functionality.`,
+
+  "Text Loop": `# Text Loop Component
+
+A smooth text animation component that cycles through different text options with customizable transitions.
+
+## Installation
+
+Requires Framer Motion for animations.
+
+\`\`\`bash
+npx shadcn@latest add "https://motion-primitives.com/c/text-loop.json"
+\`\`\`
+
+## Files to create:
+
+### 1. Component file (TextLoop.tsx)
+\`\`\`tsx
+"use client";
+
+import { AnimatePresence, motion } from "framer-motion";
+import React, { useEffect, useState } from "react";
+
+interface TextLoopProps {
+  children: React.ReactNode[];
+  className?: string;
+  interval?: number;
+  transition?: any;
+  variants?: any;
+}
+
+export function TextLoop({
+  children,
+  className = "",
+  interval = 2000,
+  transition,
+  variants,
+}: TextLoopProps) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % children.length);
+    }, interval);
+
+    return () => clearInterval(timer);
+  }, [children.length, interval]);
+
+  const defaultVariants = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -20 },
+  };
+
+  const defaultTransition = {
+    duration: 0.25,
+    ease: "easeInOut",
+  };
+
+  return (
+    <span className={\`inline-block \${className}\`}>
+      <AnimatePresence mode="wait">
+        <motion.span
+          key={currentIndex}
+          variants={variants || defaultVariants}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          transition={transition || defaultTransition}
+          className="inline-block"
+        >
+          {children[currentIndex]}
+        </motion.span>
+      </AnimatePresence>
+    </span>
+  );
+}
+\`\`\`
+
+### 2. Usage component (TextLoopCustomVariantsTransition.tsx)
+\`\`\`tsx
+import { TextLoop } from '@/components/core/text-loop';
+
+export function TextLoopCustomVariantsTransition() {
+  return (
+    <p className='inline-flex whitespace-pre-wrap text-sm'>
+      Beautiful templates for{' '}
+      <TextLoop
+        className='overflow-y-clip'
+        transition={{
+          type: 'spring',
+          stiffness: 900,
+          damping: 80,
+          mass: 10,
+        }}
+        variants={{
+          initial: {
+            y: 20,
+            rotateX: 90,
+            opacity: 0,
+            filter: 'blur(4px)',
+          },
+          animate: {
+            y: 0,
+            rotateX: 0,
+            opacity: 1,
+            filter: 'blur(0px)',
+          },
+          exit: {
+            y: -20,
+            rotateX: -90,
+            opacity: 0,
+            filter: 'blur(4px)',
+          },
+        }}
+      >
+        <span>Founders</span>
+        <span>Developers</span>
+        <span>Designers</span>
+        <span>Design Engineers</span>
+      </TextLoop>
+    </p>
+  );
+}
+\`\`\`
+
+## Usage
+
+\`\`\`tsx
+import { TextLoop } from "@/components/core/text-loop";
+
+// Basic usage
+<TextLoop>
+  <span>First text</span>
+  <span>Second text</span>
+  <span>Third text</span>
+</TextLoop>
+
+// Custom transition and variants
+<TextLoop
+  transition={{
+    type: 'spring',
+    stiffness: 900,
+    damping: 80,
+    mass: 10,
+  }}
+  variants={{
+    initial: { y: 20, rotateX: 90, opacity: 0, filter: 'blur(4px)' },
+    animate: { y: 0, rotateX: 0, opacity: 1, filter: 'blur(0px)' },
+    exit: { y: -20, rotateX: -90, opacity: 0, filter: 'blur(4px)' },
+  }}
+>
+  <span>Founders</span>
+  <span>Developers</span>
+  <span>Designers</span>
+</TextLoop>
+\`\`\`
+
+## Features
+
+- 🔄 Smooth text cycling with Framer Motion
+- ⚡ Customizable transition timing and effects
+- 🎨 Custom animation variants support
+- 📱 Responsive design
+- 🚀 Easy to integrate
+- 💫 Perfect for hero sections and dynamic content
+- ⏱️ Configurable interval timing
+
+Perfect for hero sections, feature highlights, or any modern UI requiring dynamic text animations.`,
+
+  "Text Shimmer": `# Text Shimmer Component
+
+A beautiful text shimmer animation component with customizable duration and styling.
+
+## Installation
+
+Requires Framer Motion for animations.
+
+\`\`\`bash
+npx shadcn@latest add "https://motion-primitives.com/c/text-shimmer.json"
+\`\`\`
+
+## Files to create:
+
+### 1. Component file (TextShimmer.tsx)
+\`\`\`tsx
+"use client";
+
+import { motion } from "framer-motion";
+import React from "react";
+
+interface TextShimmerProps {
+  children: string;
+  duration?: number;
+  className?: string;
+}
+
+export function TextShimmer({
+  children,
+  duration = 2,
+  className = "",
+}: TextShimmerProps) {
+  return (
+    <motion.div
+      className={\`inline-block overflow-hidden \${className}\`}
+      initial={{ backgroundPosition: "-200% 0" }}
+      animate={{ backgroundPosition: "200% 0" }}
+      transition={{
+        duration,
+        ease: "linear",
+        repeat: Infinity,
+        repeatType: "loop",
+      }}
+      style={{
+        background:
+          "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)",
+        backgroundSize: "200% 100%",
+        WebkitBackgroundClip: "text",
+        backgroundClip: "text",
+        color: "transparent",
+      }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+\`\`\`
+
+### 2. Usage component (TextShimmerBasic.tsx)
+\`\`\`tsx
+import { TextShimmer } from '@/components/core/text-shimmer';
+
+export function TextShimmerBasic() {
+  return (
+    <TextShimmer className='font-mono text-sm' duration={1}>
+      Generating code...
+    </TextShimmer>
+  );
+}
+\`\`\`
+
+## Usage
+
+\`\`\`tsx
+import { TextShimmer } from "@/components/core/text-shimmer";
+
+// Basic usage
+<TextShimmer>
+  Shimmer text effect
+</TextShimmer>
+
+// Custom duration and styling
+<TextShimmer duration={1.5} className="text-2xl font-bold">
+  Fast shimmer animation
+</TextShimmer>
+
+// Loading state example
+<TextShimmer className="font-mono text-sm" duration={1}>
+  Generating code...
+</TextShimmer>
+\`\`\`
+
+## Features
+
+- ✨ Smooth shimmer animation with Framer Motion
+- ⚡ Customizable animation duration
+- 🎨 Flexible styling with className prop
+- 📱 Responsive design
+- 🚀 Easy to integrate
+- 💫 Perfect for loading states
+
+Perfect for loading states, generating content indicators, or any modern UI requiring elegant text animations.`,
+
   "Text Effect Per Char": `# Text Effect Per Char Component
 
 A character-by-character text animation component with multiple preset effects.
@@ -1987,6 +2324,83 @@ export default function Home() {
                 </MorphingDialogContent>
               </MorphingDialogContainer>
             </MorphingDialog>
+          </div>
+        );
+      case "Text Shimmer":
+        return (
+          <div className="p-8 text-center">
+            <TextShimmer className="font-mono text-2xl" duration={1}>
+              Generating code...
+            </TextShimmer>
+          </div>
+        );
+      case "Multiple Selector":
+        const OPTIONS: Option[] = [
+          { label: "nextjs", value: "nextjs" },
+          { label: "React", value: "react" },
+          { label: "Remix", value: "remix" },
+          { label: "Vite", value: "vite" },
+          { label: "Nuxt", value: "nuxt" },
+          { label: "Vue", value: "vue" },
+          { label: "Svelte", value: "svelte" },
+          { label: "Angular", value: "angular" },
+          { label: "Ember", value: "ember", disable: true },
+          { label: "Gatsby", value: "gatsby", disable: true },
+          { label: "Astro", value: "astro" },
+        ];
+        return (
+          <div className="w-full max-w-md p-4">
+            <MultipleSelector
+              defaultOptions={OPTIONS}
+              placeholder="Select frameworks you like..."
+              emptyIndicator={
+                <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
+                  no results found.
+                </p>
+              }
+            />
+          </div>
+        );
+      case "Text Loop":
+        return (
+          <div className="p-8 text-center">
+            <p className="inline-flex whitespace-pre-wrap text-sm">
+              Beautiful templates for{" "}
+              <TextLoop
+                className="overflow-y-clip"
+                transition={{
+                  type: "spring",
+                  stiffness: 900,
+                  damping: 80,
+                  mass: 10,
+                }}
+                variants={{
+                  initial: {
+                    y: 20,
+                    rotateX: 90,
+                    opacity: 0,
+                    filter: "blur(4px)",
+                  },
+                  animate: {
+                    y: 0,
+                    rotateX: 0,
+                    opacity: 1,
+                    filter: "blur(0px)",
+                  },
+                  exit: {
+                    y: -20,
+                    rotateX: -90,
+                    opacity: 0,
+                    filter: "blur(4px)",
+                  },
+                }}
+              >
+                <span>Founders</span>
+                <span>Developers</span>
+                <span>Designers</span>
+                <span>Design Engineers</span>
+              </TextLoop>
+            </p>
           </div>
         );
       default:

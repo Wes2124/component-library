@@ -18,7 +18,20 @@ import {
   Marquee,
   MarqueeDemo,
 } from "@/reactbits";
+import { TextEffect } from "@/components/core/text-effect";
 import styled from "styled-components";
+import {
+  MorphingDialog,
+  MorphingDialogTrigger,
+  MorphingDialogContent,
+  MorphingDialogTitle,
+  MorphingDialogImage,
+  MorphingDialogSubtitle,
+  MorphingDialogClose,
+  MorphingDialogDescription,
+  MorphingDialogContainer,
+} from "@/components/core/morphing-dialog";
+import { PlusIcon } from "lucide-react";
 
 type ComponentKey =
   | "750k Views Card"
@@ -29,7 +42,9 @@ type ComponentKey =
   | "Card Hover Effect"
   | "Dots Grid Background"
   | "Text Type"
-  | "Marquee";
+  | "Marquee"
+  | "Text Effect Per Char"
+  | "Morphing Dialog";
 
 const COMPONENT_PROMPTS: Record<ComponentKey, string> = {
   "750k Views Card": `# 750k Views Component
@@ -1277,6 +1292,308 @@ import { Marquee } from "./Marquee";
 - 🔄 Infinite loop scrolling
 
 Perfect for showcasing logos, testimonials, or any content that needs continuous scrolling display.`,
+
+  "Text Effect Per Char": `# Text Effect Per Char Component
+
+A character-by-character text animation component with multiple preset effects.
+
+## Installation
+
+Requires Framer Motion for animations.
+
+\`\`\`bash
+npm install framer-motion
+\`\`\`
+
+## Files to create:
+
+### 1. Core component file (TextEffect.tsx)
+\`\`\`tsx
+"use client";
+
+import { motion } from "framer-motion";
+import React from "react";
+
+interface TextEffectProps {
+  children: string;
+  per?: "word" | "char";
+  preset?: "fade" | "slide" | "scale" | "blur";
+  className?: string;
+}
+
+const presetVariants = {
+  fade: {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1 },
+  },
+  slide: {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  },
+  scale: {
+    hidden: { opacity: 0, scale: 0.8 },
+    visible: { opacity: 1, scale: 1 },
+  },
+  blur: {
+    hidden: { opacity: 0, filter: "blur(10px)" },
+    visible: { opacity: 1, filter: "blur(0px)" },
+  },
+};
+
+export function TextEffect({
+  children,
+  per = "word",
+  preset = "fade",
+  className = "",
+}: TextEffectProps) {
+  const words = children.split(" ");
+  const variants = presetVariants[preset];
+
+  if (per === "char") {
+    const chars = children.split("");
+    return (
+      <motion.div
+        className={\`inline-block \${className}\`}
+        initial="hidden"
+        animate="visible"
+        transition={{
+          staggerChildren: 0.05,
+        }}
+      >
+        {chars.map((char, index) => (
+          <motion.span
+            key={index}
+            className="inline-block"
+            variants={variants}
+            transition={{
+              duration: 0.5,
+              ease: "easeOut",
+            }}
+          >
+            {char === " " ? "\\u00A0" : char}
+          </motion.span>
+        ))}
+      </motion.div>
+    );
+  }
+
+  return (
+    <motion.div
+      className={\`inline-block \${className}\`}
+      initial="hidden"
+      animate="visible"
+      transition={{
+        staggerChildren: 0.1,
+      }}
+    >
+      {words.map((word, index) => (
+        <motion.span
+          key={index}
+          className="inline-block mr-2"
+          variants={variants}
+          transition={{
+            duration: 0.5,
+            ease: "easeOut",
+          }}
+        >
+          {word}
+        </motion.span>
+      ))}
+    </motion.div>
+  );
+}
+\`\`\`
+
+### 2. Usage component (TextEffectPerChar.tsx)
+\`\`\`tsx
+import { TextEffect } from '@/components/core/text-effect';
+
+export function TextEffectPerChar() {
+  return (
+    <TextEffect per='char' preset='fade'>
+      Animate your ideas with motion-primitives
+    </TextEffect>
+  );
+}
+\`\`\`
+
+## Usage
+
+\`\`\`tsx
+import { TextEffect } from "@/components/core/text-effect";
+
+// Character-by-character fade effect
+<TextEffect per="char" preset="fade">
+  Hello World!
+</TextEffect>
+
+// Word-by-word slide effect
+<TextEffect per="word" preset="slide">
+  This animates word by word
+</TextEffect>
+
+// Character-by-character with blur effect
+<TextEffect per="char" preset="blur">
+  Blur animation effect
+</TextEffect>
+\`\`\`
+
+## Available Presets
+
+- **fade**: Simple opacity animation
+- **slide**: Slide up from below with fade
+- **scale**: Scale up from smaller size with fade
+- **blur**: Blur to clear transition with fade
+
+## Features
+
+- ✨ Multiple animation presets
+- 🎯 Character or word-level animations
+- ⚡ Customizable timing and stagger
+- 🎨 Smooth Framer Motion animations
+- 📱 Responsive design
+- 🚀 Easy to customize and extend
+
+Perfect for hero sections, loading states, or any modern UI requiring engaging text animations.`,
+
+  "Morphing Dialog": `# Morphing Dialog Component
+
+A beautiful morphing dialog component with smooth animations and elegant transitions.
+
+## Installation
+
+Requires Framer Motion for animations.
+
+\`\`\`bash
+npx shadcn@latest add "https://motion-primitives.com/c/morphing-dialog.json"
+\`\`\`
+
+## Files to create:
+
+### 1. Component file (MorphingDialogBasicOne.tsx)
+\`\`\`tsx
+import {
+  MorphingDialog,
+  MorphingDialogTrigger,
+  MorphingDialogContent,
+  MorphingDialogTitle,
+  MorphingDialogImage,
+  MorphingDialogSubtitle,
+  MorphingDialogClose,
+  MorphingDialogDescription,
+  MorphingDialogContainer,
+} from '@/components/core/morphing-dialog';
+import { PlusIcon } from 'lucide-react';
+
+export function MorphingDialogBasicOne() {
+  return (
+    <MorphingDialog
+      transition={{
+        type: 'spring',
+        bounce: 0.05,
+        duration: 0.25,
+      }}
+    >
+      <MorphingDialogTrigger
+        style={{
+          borderRadius: '12px',
+        }}
+        className='flex max-w-[270px] flex-col overflow-hidden border border-zinc-950/10 bg-white dark:border-zinc-50/10 dark:bg-zinc-900'
+      >
+        <MorphingDialogImage
+          src='https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&q=80'
+          alt='A modern desk lamp with elegant design'
+          className='h-48 w-full object-cover'
+        />
+        <div className='flex grow flex-row items-end justify-between px-3 py-2'>
+          <div>
+            <MorphingDialogTitle className='text-zinc-950 dark:text-zinc-50'>
+              Modern Lamp
+            </MorphingDialogTitle>
+            <MorphingDialogSubtitle className='text-zinc-700 dark:text-zinc-400'>
+              Contemporary Design
+            </MorphingDialogSubtitle>
+          </div>
+          <button
+            type='button'
+            className='relative ml-1 flex h-6 w-6 shrink-0 scale-100 select-none appearance-none items-center justify-center rounded-lg border border-zinc-950/10 text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-800 focus-visible:ring-2 active:scale-[0.98] dark:border-zinc-50/10 dark:bg-zinc-900 dark:text-zinc-500 dark:hover:bg-zinc-800 dark:hover:text-zinc-50 dark:focus-visible:ring-zinc-500'
+            aria-label='Open dialog'
+          >
+            <PlusIcon size={12} />
+          </button>
+        </div>
+      </MorphingDialogTrigger>
+      <MorphingDialogContainer>
+        <MorphingDialogContent
+          style={{
+            borderRadius: '24px',
+          }}
+          className='pointer-events-auto relative flex h-auto w-full flex-col overflow-hidden border border-zinc-950/10 bg-white dark:border-zinc-50/10 dark:bg-zinc-900 sm:w-[500px]'
+        >
+          <MorphingDialogImage
+            src='https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&q=80'
+            alt='A modern desk lamp with elegant design'
+            className='h-full w-full'
+          />
+          <div className='p-6'>
+            <MorphingDialogTitle className='text-2xl text-zinc-950 dark:text-zinc-50'>
+              Modern Lamp
+            </MorphingDialogTitle>
+            <MorphingDialogSubtitle className='text-zinc-700 dark:text-zinc-400'>
+              Contemporary Design
+            </MorphingDialogSubtitle>
+            <MorphingDialogDescription
+              disableLayoutAnimation
+              variants={{
+                initial: { opacity: 0, scale: 0.8, y: 100 },
+                animate: { opacity: 1, scale: 1, y: 0 },
+                exit: { opacity: 0, scale: 0.8, y: 100 },
+              }}
+            >
+              <p className='mt-2 text-zinc-500 dark:text-zinc-500'>
+                This modern desk lamp features a sleek contemporary design that complements any workspace.
+              </p>
+              <p className='text-zinc-500'>
+                Crafted with attention to detail, it provides excellent lighting while maintaining an elegant aesthetic.
+              </p>
+              <a
+                className='mt-2 inline-flex text-zinc-500 underline'
+                href='#'
+                target='_blank'
+                rel='noopener noreferrer'
+              >
+                Learn more
+              </a>
+            </MorphingDialogDescription>
+          </div>
+          <MorphingDialogClose className='text-zinc-50' />
+        </MorphingDialogContent>
+      </MorphingDialogContainer>
+    </MorphingDialog>
+  );
+}
+\`\`\`
+
+## Usage
+
+\`\`\`tsx
+import { MorphingDialogBasicOne } from "./MorphingDialogBasicOne";
+
+// Usage
+<MorphingDialogBasicOne />
+\`\`\`
+
+## Features
+
+- 🎯 Smooth morphing animations with Framer Motion
+- 🖼️ Image support with responsive design
+- 🎨 Dark/light theme support
+- ⚡ Spring-based transitions
+- 📱 Mobile responsive
+- 🚀 Easy to customize
+- 💫 Elegant hover effects
+
+Perfect for product showcases, portfolio items, or any modern UI requiring sophisticated dialog interactions.`,
 };
 
 export default function Home() {
@@ -1568,6 +1885,108 @@ export default function Home() {
         return (
           <div className="w-full">
             <MarqueeDemo />
+          </div>
+        );
+      case "Text Effect Per Char":
+        return (
+          <div className="p-8 text-center">
+            <TextEffect
+              per="char"
+              preset="fade"
+              className={`text-2xl font-bold ${theme === "dark" ? "text-white" : "text-gray-800"}`}
+            >
+              Animate your ideas with motion-primitives
+            </TextEffect>
+          </div>
+        );
+      case "Morphing Dialog":
+        return (
+          <div className="p-8 flex justify-center">
+            <MorphingDialog
+              transition={{
+                type: "spring",
+                bounce: 0.05,
+                duration: 0.25,
+              }}
+            >
+              <MorphingDialogTrigger
+                style={{
+                  borderRadius: "12px",
+                }}
+                className="flex max-w-[270px] flex-col overflow-hidden border border-zinc-950/10 bg-white dark:border-zinc-50/10 dark:bg-zinc-900"
+              >
+                <MorphingDialogImage
+                  src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&q=80"
+                  alt="A modern desk lamp with elegant design"
+                  className="h-48 w-full object-cover"
+                />
+                <div className="flex grow flex-row items-end justify-between px-3 py-2">
+                  <div>
+                    <MorphingDialogTitle className="text-zinc-950 dark:text-zinc-50">
+                      Modern Lamp
+                    </MorphingDialogTitle>
+                    <MorphingDialogSubtitle className="text-zinc-700 dark:text-zinc-400">
+                      Contemporary Design
+                    </MorphingDialogSubtitle>
+                  </div>
+                  <button
+                    type="button"
+                    className="relative ml-1 flex h-6 w-6 shrink-0 scale-100 select-none appearance-none items-center justify-center rounded-lg border border-zinc-950/10 text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-800 focus-visible:ring-2 active:scale-[0.98] dark:border-zinc-50/10 dark:bg-zinc-900 dark:text-zinc-500 dark:hover:bg-zinc-800 dark:hover:text-zinc-50 dark:focus-visible:ring-zinc-500"
+                    aria-label="Open dialog"
+                  >
+                    <PlusIcon size={12} />
+                  </button>
+                </div>
+              </MorphingDialogTrigger>
+              <MorphingDialogContainer>
+                <MorphingDialogContent
+                  style={{
+                    borderRadius: "24px",
+                  }}
+                  className="pointer-events-auto relative flex h-auto w-full flex-col overflow-hidden border border-zinc-950/10 bg-white dark:border-zinc-50/10 dark:bg-zinc-900 sm:w-[500px]"
+                >
+                  <MorphingDialogImage
+                    src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&q=80"
+                    alt="A modern desk lamp with elegant design"
+                    className="h-full w-full"
+                  />
+                  <div className="p-6">
+                    <MorphingDialogTitle className="text-2xl text-zinc-950 dark:text-zinc-50">
+                      Modern Lamp
+                    </MorphingDialogTitle>
+                    <MorphingDialogSubtitle className="text-zinc-700 dark:text-zinc-400">
+                      Contemporary Design
+                    </MorphingDialogSubtitle>
+                    <MorphingDialogDescription
+                      disableLayoutAnimation
+                      variants={{
+                        initial: { opacity: 0, scale: 0.8, y: 100 },
+                        animate: { opacity: 1, scale: 1, y: 0 },
+                        exit: { opacity: 0, scale: 0.8, y: 100 },
+                      }}
+                    >
+                      <p className="mt-2 text-zinc-500 dark:text-zinc-500">
+                        This modern desk lamp features a sleek contemporary
+                        design that complements any workspace.
+                      </p>
+                      <p className="text-zinc-500">
+                        Crafted with attention to detail, it provides excellent
+                        lighting while maintaining an elegant aesthetic.
+                      </p>
+                      <a
+                        className="mt-2 inline-flex text-zinc-500 underline"
+                        href="#"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Learn more
+                      </a>
+                    </MorphingDialogDescription>
+                  </div>
+                  <MorphingDialogClose className="text-zinc-50" />
+                </MorphingDialogContent>
+              </MorphingDialogContainer>
+            </MorphingDialog>
           </div>
         );
       default:
